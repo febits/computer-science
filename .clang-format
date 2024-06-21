@@ -1,0 +1,3 @@
+IndentCaseLabels: true
+AllowShortIfStatementsOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: true
