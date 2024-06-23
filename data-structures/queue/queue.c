@@ -77,7 +77,7 @@ void display(queue *q) {
   printf("\n");
   queue_node *curr = q->front;
 
-  for (u8 i = 0; curr; curr = curr->next, i++) {
+  for (u64 i = 0; curr; curr = curr->next, i++) {
     printf(" %lu%s", (u64)curr->data, i != q->size - 1 ? " <-" : "");
   }
   printf("\n\n");

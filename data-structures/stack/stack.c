@@ -75,7 +75,7 @@ void display(stack *stk) {
   printf("\n");
   stack_node *curr = stk->top;
 
-  for (u8 i = 0; curr; curr = curr->next, i++) {
+  for (u64 i = 0; curr; curr = curr->next, i++) {
     printf(" %lu%s\n", (u64)curr->data, i == 0 ? " <- TOP" : "");
   }
   printf("\n");
