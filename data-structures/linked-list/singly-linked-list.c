@@ -171,11 +171,11 @@ ll_node *delete(singly_ll *ll, void *data, op_type type, i64 pos) {
 
     return _delete_at_tail(ll);
   } else if (type == BY_VALUE && pos <= NOINDEX) {
-    if (data == NULL) {
-      return NULL;
+    if ((u64)ll->head->data == (u64)data) {
+      return _delete_at_head(ll);
     }
 
-    return _delete_by_value(ll, data);
+    return data != NULL ? _delete_by_value(ll, data) : NULL;
   } else if (type == AT_POSITION && pos > NOINDEX) {
     if (pos == 0 || pos == (i64)ll->size - 1) {
       switch (pos) {
