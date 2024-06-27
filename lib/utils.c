@@ -14,3 +14,16 @@ void ut_print_array(u64 *arr, size_t arrlen) {
   }
   printf("\n");
 }
+
+void ut_print_strarr(const char **arr, size_t arrlen) {
+  printf("Elements: ");
+
+  for (size_t i = 0; i < arrlen; i++) {
+    printf("%s", arr[i]);
+
+    if (i != arrlen - 1) {
+      printf(", ");
+    }
+  }
+  printf("\n");
+}
