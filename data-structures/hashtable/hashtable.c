@@ -9,11 +9,11 @@
 #include "utils.h"
 
 #define FREE_E(he)                                                             \
-  free((void *)he->key);                                                       \
-  free(he);
+  free((void *)(he)->key);                                                     \
+  free((he));
 
-#define COMPARE(x, y, len) strncmp(x, y, len) == 0
-#define HASH(h, sz) h % sz
+#define COMPARE(x, y, len) (strncmp((x), (y), (len)) == 0)
+#define HASH(h, sz) ((h) % (sz))
 #define KEYMAX 1024
 
 typedef u64(hash_fn)(const char *);
