@@ -250,7 +250,7 @@ int main(void) {
 
   singly_ll *ll = ll_init();
   if (ll == NULL) {
-    error("couldn't allocate stack structure: malloc()\n");
+    error("couldn't allocate linked-list structure: malloc()\n");
   }
 
   for (size_t i = 0; i < ARRSIZE(arr); i++) {

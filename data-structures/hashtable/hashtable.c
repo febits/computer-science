@@ -196,7 +196,7 @@ int main(void) {
 
   htable *ht = htable_init(20, NULL);
   if (ht == NULL) {
-    error("couldn't allocate stack structure: malloc()\n");
+    error("couldn't allocate hashtable structure: malloc()\n");
   }
 
   for (size_t i = 0; i < ARRSIZE(keys); i++) {

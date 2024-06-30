@@ -102,7 +102,7 @@ int main(void) {
 
   queue *q = queue_init();
   if (q == NULL) {
-    error("couldn't allocate stack structure: malloc()\n");
+    error("couldn't allocate queue structure: malloc()\n");
   }
 
   for (size_t i = 0; i < ARRSIZE(arr); i++) {
