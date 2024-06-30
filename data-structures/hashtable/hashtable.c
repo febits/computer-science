@@ -46,7 +46,10 @@ htable *htable_init(size_t sz, hash_fn *hash) {
   if (ht == NULL) return NULL;
 
   ht->buckets = calloc(sz, sizeof(h_entry *));
-  if (ht->buckets == NULL) return NULL;
+  if (ht->buckets == NULL) {
+    free(ht);
+    return NULL;
+  }
 
   ht->hash = hash ? hash : _djb2;
   ht->capacity = sz;
