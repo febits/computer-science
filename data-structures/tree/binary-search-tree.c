@@ -217,6 +217,7 @@ bool gendotfile(bst_node *root, const char *filename) {
   gennodes(root, file);
   fprintf(file, "}\n");
 
+  fclose(file);
   return true;
 }
 
