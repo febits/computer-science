@@ -199,8 +199,10 @@ int main(void) {
     error("couldn't allocate hashtable structure: malloc()\n");
   }
 
+  u64 n1 = 100;
+
   for (size_t i = 0; i < ARRSIZE(keys); i++) {
-    if (insert(ht, keys[i], (void *)100)) {
+    if (insert(ht, keys[i], (void *)&n1)) {
       printf("[%lu] Adding key: %s\n", i + 1, keys[i]);
     }
   }

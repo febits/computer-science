@@ -76,7 +76,7 @@ void display(stack *stk) {
   stack_node *curr = stk->top;
 
   for (u64 i = 0; curr; curr = curr->next, i++) {
-    printf(" %lu%s\n", (u64)curr->data, i == 0 ? " <- TOP" : "");
+    printf(" %lu%s\n", *(u64 *)curr->data, i == 0 ? " <- TOP" : "");
   }
   printf("\n");
 }
@@ -104,23 +104,23 @@ int main(void) {
   }
 
   for (size_t i = 0; i < ARRSIZE(arr); i++) {
-    if (push(stk, (void *)arr[i])) {
+    if (push(stk, (void *)&arr[i])) {
       printf("Adding %lu\n", arr[i]);
     }
   }
 
   display(stk);
 
-  printf("Peek: %lu\n\n", (u64)peek(stk)->data);
+  printf("Peek: %lu\n\n", *(u64 *)peek(stk)->data);
 
   stack_node *tmp = pop(stk);
   if (tmp) {
-    printf("Popping %lu...\n", (u64)tmp->data);
+    printf("Popping %lu...\n", *(u64 *)tmp->data);
     free(tmp);
   }
 
   display(stk);
-  printf("Peek: %lu\n", (u64)peek(stk)->data);
+  printf("Peek: %lu\n", *(u64 *)peek(stk)->data);
 
   destroy(stk);
 

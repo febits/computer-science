@@ -146,7 +146,7 @@ static ll_node *_delete_by_value(singly_ll *ll, void *data) {
   ll_node *curr = ll->head;
 
   for (; curr; prev = curr, curr = curr->next) {
-    if ((u64)curr->data == (u64)data) {
+    if (*(u64 *)curr->data == *(u64 *)data) {
       tmp = curr;
       prev->next = curr->next;
       break;
@@ -171,7 +171,7 @@ ll_node *delete(singly_ll *ll, void *data, op_type type, i64 pos) {
 
     return _delete_at_tail(ll);
   } else if (type == BY_VALUE && pos <= NOINDEX) {
-    if ((u64)ll->head->data == (u64)data) {
+    if (*(u64 *)ll->head->data == *(u64 *)data) {
       return _delete_at_head(ll);
     }
 
@@ -196,7 +196,7 @@ ll_node *search(singly_ll *ll, void *data) {
   }
 
   for (ll_node *curr = ll->head; curr; curr = curr->next) {
-    if ((u64)curr->data == (u64)data) {
+    if (*(u64 *)curr->data == *(u64 *)data) {
       return curr;
     }
   }
@@ -226,7 +226,7 @@ void display(singly_ll *ll) {
 
   printf("\n");
   for (u64 i = 0; curr; curr = curr->next, i++) {
-    printf(" %lu%s", (u64)curr->data, i != ll->size - 1 ? " ->" : "");
+    printf(" %lu%s", *(u64 *)curr->data, i != ll->size - 1 ? " ->" : "");
   }
   printf("\n\n");
 }
@@ -254,64 +254,72 @@ int main(void) {
   }
 
   for (size_t i = 0; i < ARRSIZE(arr); i++) {
-    if (insert(ll, (void *)arr[i], AT_HEAD, NOINDEX)) {
+    if (insert(ll, (void *)&arr[i], AT_HEAD, NOINDEX)) {
       printf("Adding at head: %lu\n", arr[i]);
     }
   }
 
   display(ll);
 
-  if (insert(ll, (void *)15, AT_TAIL, NOINDEX)) {
-    printf("Adding at tail: %d\n", 15);
+  u64 n1 = 15;
+
+  if (insert(ll, (void *)&n1, AT_TAIL, NOINDEX)) {
+    printf("Adding at tail: %lu\n", n1);
     display(ll);
   }
 
-  if (insert(ll, (void *)2000, AT_POSITION, 3)) {
-    printf("Adding at position(3): %d\n", 2000);
+  u64 n2 = 2000;
+
+  if (insert(ll, (void *)&n2, AT_POSITION, 3)) {
+    printf("Adding at position(3): %lu\n", n2);
     display(ll);
   }
 
-  if (insert(ll, (void *)8500, AT_POSITION, 5)) {
-    printf("Adding at position(5): %d\n", 8500);
+  u64 n3 = 8500;
+
+  if (insert(ll, (void *)&n3, AT_POSITION, 5)) {
+    printf("Adding at position(5): %lu\n", n3);
     display(ll);
   }
 
   ll_node *tmp = delete (ll, NULL, AT_HEAD, NOINDEX);
   if (tmp) {
-    printf("Deleting at head: %lu\n", (u64)tmp->data);
+    printf("Deleting at head: %lu\n", *(u64 *)tmp->data);
     display(ll);
     free(tmp);
   }
 
   tmp = delete (ll, NULL, AT_TAIL, NOINDEX);
   if (tmp) {
-    printf("Deleting at tail: %lu\n", (u64)tmp->data);
+    printf("Deleting at tail: %lu\n", *(u64 *)tmp->data);
     display(ll);
     free(tmp);
   }
 
   tmp = delete(ll, NULL, AT_POSITION, 2);
   if (tmp) {
-    printf("Deleting at position(2): %lu\n", (u64)tmp->data);
+    printf("Deleting at position(2): %lu\n", *(u64 *)tmp->data);
     display(ll);
     free(tmp);
   }
 
-  tmp = delete(ll, (void *)8500, BY_VALUE, NOINDEX);
+  tmp = delete(ll, (void *)&n3, BY_VALUE, NOINDEX);
   if (tmp) {
-    printf("Deleting by value: %lu\n", (u64)tmp->data);
+    printf("Deleting by value: %lu\n", *(u64 *)tmp->data);
     display(ll);
     free(tmp);
   }
 
-  tmp = search(ll, (void *)5000);
+  u64 n4 = 5000;
+
+  tmp = search(ll, (void *)&n4);
   if (tmp) {
-    printf("Searching %lu... Found it!\n", (u64)tmp->data);
+    printf("Searching %lu... Found it!\n", *(u64 *)tmp->data);
   }
 
   tmp = get(ll, 4);
   if (tmp) {
-    printf("Getting %lu... Got it!\n", (u64)tmp->data);
+    printf("Getting %lu... Got it!\n", *(u64 *)tmp->data);
   }
 
   destroy(ll);

@@ -78,7 +78,7 @@ void display(queue *q) {
   queue_node *curr = q->front;
 
   for (u64 i = 0; curr; curr = curr->next, i++) {
-    printf(" %lu%s", (u64)curr->data, i != q->size - 1 ? " <-" : "");
+    printf(" %lu%s", *(u64 *)curr->data, i != q->size - 1 ? " <-" : "");
   }
   printf("\n\n");
 }
@@ -106,24 +106,24 @@ int main(void) {
   }
 
   for (size_t i = 0; i < ARRSIZE(arr); i++) {
-    if (enqueue(q, (void *)arr[i])) {
+    if (enqueue(q, (void *)&arr[i])) {
       printf("Adding %lu\n", arr[i]);
     }
   }
 
   display(q);
 
-  printf("Front: %lu\n\n", (u64)front(q)->data);
+  printf("Front: %lu\n\n", *(u64 *)front(q)->data);
 
   queue_node *tmp = dequeue(q);
   if (tmp) {
-    printf("Dequeuing %lu...\n", (u64)tmp->data);
+    printf("Dequeuing %lu...\n", *(u64 *)tmp->data);
     free(tmp);
   }
 
   display(q);
 
-  printf("Front: %lu\n\n", (u64)front(q)->data);
+  printf("Front: %lu\n\n", *(u64 *)front(q)->data);
 
   destroy(q);
 
