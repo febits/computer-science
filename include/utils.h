@@ -13,5 +13,6 @@
 
 void ut_print_array(u64 *arr, size_t arrlen);
 void ut_print_strarr(const char **arr, size_t arrlen);
+void ut_swap(void *a, void *b, size_t item_size);
 
 #endif
