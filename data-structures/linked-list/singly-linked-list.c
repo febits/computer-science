@@ -6,6 +6,7 @@
 
 #define NOINDEX (-1)
 
+typedef i8(compare)(const void *, const void *);
 typedef enum { AT_HEAD, AT_TAIL, AT_POSITION, BY_VALUE } op_type;
 
 typedef struct ll_node {
@@ -17,6 +18,13 @@ typedef struct {
   ll_node *head;
   size_t size;
 } singly_ll;
+
+static i8 _compare(const void *a, const void *b) {
+  const u64 _a = *(const u64 *)a;
+  const u64 _b = *(const u64 *)b;
+
+  return (_a > _b) - (_a < _b);
+}
 
 singly_ll *ll_init(void) {
   singly_ll *ll = malloc(sizeof(singly_ll));
@@ -134,19 +142,19 @@ static ll_node *_delete_at_position(singly_ll *ll, u64 pos) {
 
   tmp = curr;
   prev->next = curr->next;
-  
+
   ll->size--;
   return tmp;
 }
 
-static ll_node *_delete_by_value(singly_ll *ll, void *data) {
+static ll_node *_delete_by_value(singly_ll *ll, void *data, compare *cmp) {
   ll_node *tmp = NULL;
 
   ll_node *prev = NULL;
   ll_node *curr = ll->head;
 
   for (; curr; prev = curr, curr = curr->next) {
-    if (*(u64 *)curr->data == *(u64 *)data) {
+    if (cmp(curr->data, data) == 0) {
       tmp = curr;
       prev->next = curr->next;
       break;
@@ -157,7 +165,7 @@ static ll_node *_delete_by_value(singly_ll *ll, void *data) {
   return tmp;
 }
 
-ll_node *delete(singly_ll *ll, void *data, op_type type, i64 pos) {
+ll_node *delete(singly_ll *ll, void *data, op_type type, i64 pos, compare *cmp) {
   if (ll == NULL || ll->head == NULL || pos >= (i64)ll->size) {
     return NULL;
   }
@@ -170,12 +178,12 @@ ll_node *delete(singly_ll *ll, void *data, op_type type, i64 pos) {
     }
 
     return _delete_at_tail(ll);
-  } else if (type == BY_VALUE && pos <= NOINDEX) {
-    if (*(u64 *)ll->head->data == *(u64 *)data) {
+  } else if (type == BY_VALUE && pos <= NOINDEX && cmp) {
+    if (cmp(ll->head->data, data) == 0) {
       return _delete_at_head(ll);
     }
 
-    return data != NULL ? _delete_by_value(ll, data) : NULL;
+    return data != NULL ? _delete_by_value(ll, data, cmp) : NULL;
   } else if (type == AT_POSITION && pos > NOINDEX) {
     if (pos == 0 || pos == (i64)ll->size - 1) {
       switch (pos) {
@@ -190,13 +198,13 @@ ll_node *delete(singly_ll *ll, void *data, op_type type, i64 pos) {
   return NULL;
 }
 
-ll_node *search(singly_ll *ll, void *data) {
-  if (ll == NULL) {
+ll_node *search(singly_ll *ll, void *data, compare *cmp) {
+  if (ll == NULL || cmp == NULL) {
     return NULL;
   }
 
   for (ll_node *curr = ll->head; curr; curr = curr->next) {
-    if (*(u64 *)curr->data == *(u64 *)data) {
+    if (cmp(curr->data, data) == 0) {
       return curr;
     }
   }
@@ -238,7 +246,7 @@ void destroy(singly_ll *ll) {
 
   size_t sz = ll->size;
   for (size_t i = 0; i < sz; i++) {
-    free(delete (ll, NULL, AT_HEAD, -1));
+    free(delete (ll, NULL, AT_HEAD, -1, NULL));
   }
 
   free(ll);
@@ -282,28 +290,28 @@ int main(void) {
     display(ll);
   }
 
-  ll_node *tmp = delete (ll, NULL, AT_HEAD, NOINDEX);
+  ll_node *tmp = delete (ll, NULL, AT_HEAD, NOINDEX, NULL);
   if (tmp) {
     printf("Deleting at head: %lu\n", *(u64 *)tmp->data);
     display(ll);
     free(tmp);
   }
 
-  tmp = delete (ll, NULL, AT_TAIL, NOINDEX);
+  tmp = delete (ll, NULL, AT_TAIL, NOINDEX, NULL);
   if (tmp) {
     printf("Deleting at tail: %lu\n", *(u64 *)tmp->data);
     display(ll);
     free(tmp);
   }
 
-  tmp = delete(ll, NULL, AT_POSITION, 2);
+  tmp = delete (ll, NULL, AT_POSITION, 2, NULL);
   if (tmp) {
     printf("Deleting at position(2): %lu\n", *(u64 *)tmp->data);
     display(ll);
     free(tmp);
   }
 
-  tmp = delete(ll, (void *)&n3, BY_VALUE, NOINDEX);
+  tmp = delete (ll, (void *)&n3, BY_VALUE, NOINDEX, _compare);
   if (tmp) {
     printf("Deleting by value: %lu\n", *(u64 *)tmp->data);
     display(ll);
@@ -312,7 +320,7 @@ int main(void) {
 
   u64 n4 = 5000;
 
-  tmp = search(ll, (void *)&n4);
+  tmp = search(ll, (void *)&n4, _compare);
   if (tmp) {
     printf("Searching %lu... Found it!\n", *(u64 *)tmp->data);
   }

@@ -1,19 +1,28 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 #include "types.h"
 #include "utils.h"
 
-#define NUMELEMENTS 100000
+#define NUMELEMENTS 10
 
-bool linear_search(u64 *arr, size_t arrlen, u64 target) {
-  if (arr == NULL || target > arrlen) {
+static i8 _compare(const void *a, const void *b) {
+  const u64 _a = *(const u64 *)a;
+  const u64 _b = *(const u64 *)b;
+
+  return (_a > _b) - (_a < _b);
+}
+
+bool linear_search(void *arr, size_t arrlen, size_t item_size, void *target,
+                   i8 (*compare)(const void *, const void *)) {
+  if (arr == NULL || target == NULL || compare == NULL) {
     return false;
   }
 
+  char *base = (char *)arr;
   for (size_t i = 0; i < arrlen; i++) {
-    if (arr[i] == target) {
+    if (compare(target, (void *)(base + (i * item_size))) == 0) {
       return true;
     }
   }
@@ -22,11 +31,7 @@ bool linear_search(u64 *arr, size_t arrlen, u64 target) {
 }
 
 int main(void) {
-  u64 *arr = malloc(sizeof(u64) * NUMELEMENTS);
-
-  if (arr == NULL) {
-    error("allocation error\n");
-  }
+  u64 arr[NUMELEMENTS] = {0};
 
   for (size_t i = 0; i < NUMELEMENTS; i++) {
     arr[i] = i + 1;
@@ -34,8 +39,10 @@ int main(void) {
 
   ut_print_array(arr, NUMELEMENTS);
 
-  if (linear_search(arr, NUMELEMENTS, NUMELEMENTS)) {
-    printf("\nFound!\n");
+  u64 target = 5;
+
+  if (linear_search(arr, ARRSIZE(arr), sizeof(arr[0]), &target, _compare)) {
+    printf("\nFound! (%lu)\n", target);
   }
 
   return EXIT_SUCCESS;
