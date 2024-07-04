@@ -192,7 +192,7 @@ int main(void) {
                   "samsung", "apple",     "soccer",   "anime",
                   "manga",   "seinen",    "notebook", "microphone"};
 
-  ut_print_strarr((const char **)keys, ARRSIZE(keys));
+  ut_print_array(keys, ARRSIZE(keys));
 
   htable *ht = htable_init(20, NULL);
   if (ht == NULL) {
