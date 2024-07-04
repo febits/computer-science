@@ -12,7 +12,7 @@ i8 ut_compare_u64(const void *a, const void *b) {
 }
 
 void ut_swap(void *a, void *b, size_t item_size) {
-  char *tmp = malloc(item_size);
+  void *tmp = malloc(item_size);
   memcpy(tmp, a, item_size);
   memcpy(a, b, item_size);
   memcpy(b, tmp, item_size);
