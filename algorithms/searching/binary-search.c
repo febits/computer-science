@@ -7,13 +7,6 @@
 
 #define NUMELEMENTS 10
 
-static i8 _compare(const void *a, const void *b) {
-  const u64 _a = *(const u64 *)a;
-  const u64 _b = *(const u64 *)b;
-
-  return (_a > _b) - (_a < _b);
-}
-
 bool binary_search(void *arr, size_t arrlen, size_t item_size, void *target,
                    i8 (*compare)(const void *, const void *)) {
   if (arr == NULL || target == NULL || compare == NULL) {
@@ -51,7 +44,7 @@ int main(void) {
 
   u64 target = 9;
 
-  if (binary_search(arr, ARRSIZE(arr), sizeof(arr[0]), &target, _compare)) {
+  if (binary_search(arr, ARRSIZE(arr), sizeof(arr[0]), &target, ut_compare_u64)) {
     printf("\nFound! (%lu)\n", target);
   }
 

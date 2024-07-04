@@ -5,13 +5,6 @@
 #include "types.h"
 #include "utils.h"
 
-static i8 _compare(const void *a, const void *b) {
-  const u64 _a = *(const u64 *)a;
-  const u64 _b = *(const u64 *)b;
-
-  return (_a > _b) - (_a < _b);
-}
-
 void bubble_sort(void *arr, size_t arrlen, size_t item_size,
                  i8 (*cmp)(const void *, const void *)) {
   if (arr == NULL || cmp == NULL) {
@@ -35,7 +28,7 @@ int main(void) {
 
   ut_print_array(arr, ARRSIZE(arr));
 
-  bubble_sort(arr, ARRSIZE(arr), sizeof(arr[0]), _compare);
+  bubble_sort(arr, ARRSIZE(arr), sizeof(arr[0]), ut_compare_u64);
 
   ut_print_array(arr, ARRSIZE(arr));
 

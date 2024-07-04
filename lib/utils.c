@@ -4,6 +4,13 @@
 
 #include "types.h"
 
+i8 ut_compare_u64(const void *a, const void *b) {
+  const u64 _a = *(const u64 *)a;
+  const u64 _b = *(const u64 *)b;
+
+  return (_a > _b) - (_a < _b);
+}
+
 void ut_swap(void *a, void *b, size_t item_size) {
   char *tmp = malloc(item_size);
   memcpy(tmp, a, item_size);

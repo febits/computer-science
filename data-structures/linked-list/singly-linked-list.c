@@ -19,13 +19,6 @@ typedef struct {
   size_t size;
 } singly_ll;
 
-static i8 _compare(const void *a, const void *b) {
-  const u64 _a = *(const u64 *)a;
-  const u64 _b = *(const u64 *)b;
-
-  return (_a > _b) - (_a < _b);
-}
-
 singly_ll *ll_init(void) {
   singly_ll *ll = malloc(sizeof(singly_ll));
   if (ll == NULL) {
@@ -311,7 +304,7 @@ int main(void) {
     free(tmp);
   }
 
-  tmp = delete (ll, (void *)&n3, BY_VALUE, NOINDEX, _compare);
+  tmp = delete (ll, (void *)&n3, BY_VALUE, NOINDEX, ut_compare_u64);
   if (tmp) {
     printf("Deleting by value: %lu\n", *(u64 *)tmp->data);
     display(ll);
@@ -320,7 +313,7 @@ int main(void) {
 
   u64 n4 = 5000;
 
-  tmp = search(ll, (void *)&n4, _compare);
+  tmp = search(ll, (void *)&n4, ut_compare_u64);
   if (tmp) {
     printf("Searching %lu... Found it!\n", *(u64 *)tmp->data);
   }
