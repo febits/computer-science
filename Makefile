@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -pedantic -Iinclude -g
+CFLAGS=-Wall -Wextra -pedantic -Iinclude -g -lm
 
 BUILD_DIR=build
 SRC_DIR=data-structures algorithms
