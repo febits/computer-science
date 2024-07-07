@@ -10,6 +10,8 @@ BIN=$(patsubst %.c, $(BUILD_DIR)/%, $(SRC))
 LIB_SRC=$(wildcard lib/*.c)
 LIB_BIN=$(BUILD_DIR)/utils.o
 
+SRC_PY = $(shell find $(SRC_DIR) -name "*.py")
+
 .PHONY: default always clean
 default: always $(LIB_BIN) $(BIN)
 
@@ -21,6 +23,8 @@ $(BUILD_DIR)/%: %.c
 
 always:
 	mkdir -p $(BUILD_DIR)
+	cp $(SRC_PY) $(BUILD_DIR)
+	chmod +x $(wildcard $(BUILD_DIR)/*.py)
 
 clean:
 	rm -rf $(BUILD_DIR)
