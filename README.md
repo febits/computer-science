@@ -2,6 +2,8 @@
 
 Here is some code mainly focused on [data structures](https://en.wikipedia.org/wiki/Data_structure), [algorithms](https://en.wikipedia.org/wiki/Algorithm), and computer science stuff.
 
+> These data structures and algorithms were not supposed to be used in production environments.
+
 ## Implemented
 
 - **Data structures**
