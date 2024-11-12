@@ -33,3 +33,4 @@ Here is some code mainly focused on [data structures](https://en.wikipedia.org/w
 ## TODO
 - [ ] Red-Black Tree (Balanced BST)
 - [ ] Heap, Priority Queue and Heap Sort
+- [ ] Dijkstra Algorithm and Shortest Path
