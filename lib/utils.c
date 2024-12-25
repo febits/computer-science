@@ -4,8 +4,6 @@
 
 #include "types.h"
 
-#define unused __attribute__((unused))
-
 i8 ut_compare_u64(const void *a, const void *b) {
   const u64 _a = *(const u64 *)a;
   const u64 _b = *(const u64 *)b;
@@ -21,7 +19,7 @@ void ut_swap(void *a, void *b, size_t item_size) {
   free(tmp);
 }
 
-void ut_print_unsupported(unused void *arr, unused size_t arrlen) {
+void ut_print_unsupported(void *arr, size_t arrlen) {
   printf("Elements: unsupported type\n");
 }
 
