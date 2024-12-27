@@ -1,23 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "singlyll.h"
 #include "types.h"
-#include "utils.h"
-
-#define NOINDEX (-1)
-
-typedef i8(compare)(const void *, const void *);
-typedef enum { AT_HEAD, AT_TAIL, AT_POSITION, BY_VALUE } op_type;
-
-typedef struct ll_node {
-  struct ll_node *next;
-  void *data;
-} ll_node;
-
-typedef struct {
-  ll_node *head;
-  size_t size;
-} singly_ll;
 
 singly_ll *ll_init(void) {
   singly_ll *ll = malloc(sizeof(singly_ll));
@@ -66,7 +51,7 @@ static ll_node *_insert_at_pos(singly_ll *ll, ll_node *node, u64 pos) {
   return node;
 }
 
-ll_node *insert(singly_ll *ll, void *data, op_type type, i64 pos) {
+ll_node *ll_insert(singly_ll *ll, void *data, op_type type, i64 pos) {
   ll_node *node = malloc(sizeof(ll_node));
 
   if (ll == NULL || node == NULL || pos >= (i64)ll->size) {
@@ -158,7 +143,8 @@ static ll_node *_delete_by_value(singly_ll *ll, void *data, compare *cmp) {
   return tmp;
 }
 
-ll_node *delete(singly_ll *ll, void *data, op_type type, i64 pos, compare *cmp) {
+ll_node *ll_delete(singly_ll *ll, void *data, op_type type, i64 pos,
+                   compare *cmp) {
   if (ll == NULL || ll->head == NULL || pos >= (i64)ll->size) {
     return NULL;
   }
@@ -191,7 +177,7 @@ ll_node *delete(singly_ll *ll, void *data, op_type type, i64 pos, compare *cmp) 
   return NULL;
 }
 
-ll_node *search(singly_ll *ll, void *data, compare *cmp) {
+ll_node *ll_search(singly_ll *ll, void *data, compare *cmp) {
   if (ll == NULL || cmp == NULL) {
     return NULL;
   }
@@ -205,7 +191,7 @@ ll_node *search(singly_ll *ll, void *data, compare *cmp) {
   return NULL;
 }
 
-ll_node *get(singly_ll *ll, u64 pos) {
+ll_node *ll_get(singly_ll *ll, u64 pos) {
   if (ll == NULL || pos >= ll->size) {
     return NULL;
   }
@@ -218,28 +204,14 @@ ll_node *get(singly_ll *ll, u64 pos) {
   return curr;
 }
 
-void display(singly_ll *ll) {
-  if (ll == NULL || ll->size == 0) {
-    return;
-  }
-
-  ll_node *curr = ll->head;
-
-  printf("\n");
-  for (u64 i = 0; curr; curr = curr->next, i++) {
-    printf(" %lu%s", *(u64 *)curr->data, i != ll->size - 1 ? " ->" : "");
-  }
-  printf("\n\n");
-}
-
-void destroy(singly_ll *ll) {
+void ll_destroy(singly_ll *ll) {
   if (ll == NULL) {
     return;
   }
 
   size_t sz = ll->size;
   for (size_t i = 0; i < sz; i++) {
-    free(delete (ll, NULL, AT_HEAD, -1, NULL));
+    free(ll_delete(ll, NULL, AT_HEAD, -1, NULL));
   }
 
   free(ll);
