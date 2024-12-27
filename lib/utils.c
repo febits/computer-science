@@ -3,6 +3,26 @@
 #include <string.h>
 
 #include "types.h"
+#include "utils.h"
+
+#define GREEN "\033[32m"
+#define RED "\033[31m"
+#define OFF "\033[0m"
+
+void ut_assert_print(const char *file, const char *func, int line,
+                     const char *expr, ut_assert_print_type type) {
+  switch (type) {
+    case PASSED:
+      fprintf(stdout, GREEN "ASSERT PASSED: " OFF "%s:%d: %s: '%s'\n", file,
+              line, func, expr);
+      break;
+    case FAILED:
+      fprintf(stderr, RED "ASSERT FAILED: " OFF "%s:%d: %s: '%s'\n", file, line,
+              func, expr);
+      exit(EXIT_FAILURE);
+      break;
+  }
+}
 
 i8 ut_compare_u64(const void *a, const void *b) {
   const u64 _a = *(const u64 *)a;

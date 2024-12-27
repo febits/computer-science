@@ -2,10 +2,19 @@
 #define UTILS_H
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "types.h"
 
+typedef enum { FAILED, PASSED } ut_assert_print_type;
+
 #define ARRSIZE(arr) (sizeof((arr)) / sizeof((arr[0])))
+
+#define ut_assert(expr)                                                        \
+  if (expr)                                                                    \
+    ut_assert_print(__FILE__, __func__, __LINE__, #expr, PASSED);              \
+  else                                                                         \
+    ut_assert_print(__FILE__, __func__, __LINE__, #expr, FAILED);
 
 #define error(fmt, ...)                                                        \
   fprintf(stderr, fmt, ##__VA_ARGS__);                                         \
@@ -16,6 +25,9 @@
       u64: ut_print_u64arr,                                                    \
       char *: ut_print_strarr,                                                 \
       default: ut_print_unsupported)((arr), (arrlen))
+
+void ut_assert_print(const char *file, const char *func, int line,
+                     const char *expr, ut_assert_print_type type);
 
 void ut_swap(void *a, void *b, size_t item_size);
 i8 ut_compare_u64(const void *a, const void *b);
