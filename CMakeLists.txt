@@ -12,3 +12,11 @@ set(ALL_SOURCES ${DSA_SOURCES} ${UTILS_SOURCES})
 
 add_library(dsa-utils STATIC ${ALL_SOURCES})
 target_include_directories(dsa-utils PUBLIC "${CMAKE_SOURCE_DIR}/include")
+
+file(GLOB_RECURSE TEST_SOURCES "${CMAKE_SOURCE_DIR}/tests/*.c")
+
+foreach(TEST_SRC ${TEST_SOURCES})
+  get_filename_component(TARGET ${TEST_SRC} NAME_WE)
+  add_executable(${TARGET} ${TEST_SRC})
+  target_link_libraries(${TARGET} PRIVATE dsa-utils)
+endforeach()
