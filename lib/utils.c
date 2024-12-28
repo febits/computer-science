@@ -40,11 +40,11 @@ void ut_swap(void *a, void *b, size_t item_size) {
 }
 
 void ut_print_unsupported(void *arr, size_t arrlen) {
-  printf("Elements: unsupported type\n");
+  printf("[unsupported type]\n");
 }
 
 void ut_print_u64arr(u64 *arr, size_t arrlen) {
-  printf("Elements: ");
+  printf("[");
 
   for (size_t i = 0; i < arrlen; i++) {
     printf("%lu", arr[i]);
@@ -53,11 +53,11 @@ void ut_print_u64arr(u64 *arr, size_t arrlen) {
       printf(", ");
     }
   }
-  printf("\n");
+  printf("]\n");
 }
 
 void ut_print_strarr(char **arr, size_t arrlen) {
-  printf("Elements: ");
+  printf("[");
 
   for (size_t i = 0; i < arrlen; i++) {
     printf("%s", arr[i]);
@@ -66,5 +66,5 @@ void ut_print_strarr(char **arr, size_t arrlen) {
       printf(", ");
     }
   }
-  printf("\n");
+  printf("]\n");
 }
