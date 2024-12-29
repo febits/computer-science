@@ -9,6 +9,7 @@
 typedef enum { FAILED, PASSED } ut_assert_print_type;
 
 #define ARRSIZE(arr) (sizeof((arr)) / sizeof((arr[0])))
+#define UT_GETAS(pointer, type) (*(type)(pointer))
 
 #define ut_assert(expr)                                                        \
   if (expr)                                                                    \
