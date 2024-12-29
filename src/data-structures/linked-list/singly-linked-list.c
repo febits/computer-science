@@ -87,7 +87,8 @@ bool ll_insert_at_pos(singly_ll *ll, void *data, size_t pos) {
     }
 
     if (pos == 0) {
-        ll_insert_at_head(ll, data);
+        free(nnode);
+        return ll_insert_at_head(ll, data);
     } else {
         ll_node *tnode = ll->head;
 
