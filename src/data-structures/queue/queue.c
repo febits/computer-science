@@ -1,97 +1,78 @@
-#include <stdio.h>
 #include <stdlib.h>
 
-#include "types.h"
+#include "queue.h"
 #include "utils.h"
 
-typedef struct queue_node {
-  struct queue_node *next;
-  void *data;
-} queue_node;
+queue queue_init(void) { return (queue){NULL, NULL, 0}; }
+bool q_isempty(queue *q) { return q->size == 0; }
 
-typedef struct {
-  queue_node *front;
-  queue_node *rear;
-  size_t size;
-} queue;
+static queue_node *_create_node(void *data) {
+    queue_node *nnode = malloc(sizeof(queue_node));
 
-queue *queue_init(void) {
-  queue *q = malloc(sizeof(queue));
-  if (q == NULL) {
-    return NULL;
-  }
+    if (nnode == NULL) {
+        return NULL;
+    }
 
-  q->front = NULL;
-  q->rear = NULL;
-  q->size = 0;
+    nnode->data = data;
+    nnode->next = NULL;
 
-  return q;
+    return nnode;
 }
 
-queue_node *enqueue(queue *q, void *data) {
-  queue_node *node = malloc(sizeof(queue_node));
-  if (q == NULL || node == NULL) {
-    return NULL;
-  }
+queue_node *q_front(queue *q) {
+    if (q == NULL) {
+        return NULL;
+    }
 
-  node->data = data;
-  node->next = NULL;
-
-  if (q->front == NULL) {
-    q->front = node;
-    q->rear = node;
-  } else {
-    q->rear->next = node;
-    q->rear = node;
-  }
-
-  q->size++;
-  return node;
+    return q->front;
 }
 
-queue_node *dequeue(queue *q) {
-  if (q == NULL) {
-    return NULL;
-  }
+bool q_enqueue(queue *q, void *data) {
+    if (q == NULL) {
+        return false;
+    }
 
-  queue_node *node = q->front;
-  q->front = node->next;
+    queue_node *nnode = _create_node(data);
 
-  q->size--;
-  return node;
+    if (nnode == NULL) {
+        return false;
+    }
+
+    if (q->front == NULL && q->rear == NULL) {
+        q->front = nnode;
+        q->rear = nnode;
+    } else {
+        q->rear->next = nnode;
+        q->rear = nnode;
+    }
+
+    q->size++;
+    return true;
 }
 
-queue_node *front(queue *q) {
-  if (q == NULL) {
-    return NULL;
-  }
+bool q_dequeue(queue *q) {
+    if (q == NULL || q->size == 0) {
+        return false;
+    }
 
-  return q->front;
+    queue_node *fnode = q->front;
+    q->front = fnode->next;
+    free(fnode);
+
+    q->size--;
+    return true;
 }
 
-void display(queue *q) {
-  if (q == NULL) {
-    return;
-  }
+void q_destroy(queue *q) {
+    if (q == NULL) {
+        return;
+    }
 
-  printf("\n");
-  queue_node *curr = q->front;
+    size_t size = q->size;
+    for (size_t i = 0; i < size; i++) {
+        q_dequeue(q);
+    }
 
-  for (u64 i = 0; curr; curr = curr->next, i++) {
-    printf(" %lu%s", *(u64 *)curr->data, i != q->size - 1 ? " <-" : "");
-  }
-  printf("\n\n");
-}
-
-void destroy(queue *q) {
-  if (q == NULL) {
-    return;
-  }
-
-  size_t sz = q->size;
-  for (size_t i = 0; i < sz; i++) {
-    free(dequeue(q));
-  }
-
-  free(q);
+    q->rear = q->front = NULL;
+    q->size = 0;
 }
