@@ -1,30 +1,37 @@
 #ifndef SINGLYLL_H
 #define SINGLYLL_H
 
-#include <stddef.h>
 #include "types.h"
-
-#define NOINDEX (-1)
+#include <stdbool.h>
+#include <stddef.h>
 
 typedef i8(compare)(const void *, const void *);
-typedef enum { AT_HEAD, AT_TAIL, AT_POSITION, BY_VALUE } op_type;
 
 typedef struct ll_node {
-  struct ll_node *next;
-  void *data;
+    struct ll_node *next;
+    void *data;
 } ll_node;
 
 typedef struct {
-  ll_node *head;
-  size_t size;
+    ll_node *head;
+    size_t size;
 } singly_ll;
 
-singly_ll *ll_init(void);
+singly_ll ll_init(void);
 
-ll_node *ll_insert(singly_ll *ll, void *data, op_type type, i64 pos);
-ll_node *ll_delete(singly_ll *ll, void *data, op_type type, i64 pos, compare *cmp);
+bool ll_insert_at_head(singly_ll *ll, void *data);
+bool ll_insert_at_tail(singly_ll *ll, void *data);
+bool ll_insert_at_pos(singly_ll *ll, void *data, size_t pos);
+
+bool ll_delete_at_head(singly_ll *ll);
+bool ll_delete_at_tail(singly_ll *ll);
+bool ll_delete_at_pos(singly_ll *ll, size_t pos);
+bool ll_delete_by_value(singly_ll *ll, void *data, compare *cmp);
+
 ll_node *ll_search(singly_ll *ll, void *data, compare *cmp);
-ll_node *ll_get(singly_ll *ll, u64 pos);
+ll_node *ll_get(singly_ll *ll, size_t pos);
+
+bool ll_isempty(singly_ll *ll);
 
 void ll_destroy(singly_ll *ll);
 
