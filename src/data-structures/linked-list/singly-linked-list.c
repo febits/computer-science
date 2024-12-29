@@ -200,7 +200,7 @@ bool ll_delete_by_value(singly_ll *ll, void *data, compare *cmp) {
 
 ll_node *ll_search(singly_ll *ll, void *data, compare *cmp) {
     if (ll == NULL || ll->head == NULL || data == NULL || cmp == NULL) {
-        return false;
+        return NULL;
     }
 
     ll_node *tnode = ll->head;
@@ -216,7 +216,7 @@ ll_node *ll_search(singly_ll *ll, void *data, compare *cmp) {
 
 ll_node *ll_get(singly_ll *ll, size_t pos) {
     if (ll == NULL || ll->head == NULL || pos >= ll->size) {
-        return false;
+        return NULL;
     }
 
     ll_node *tnode = ll->head;
