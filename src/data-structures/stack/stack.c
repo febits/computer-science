@@ -1,95 +1,79 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "stack.h"
 #include "types.h"
 #include "utils.h"
 
-typedef struct node {
-  struct node *next;
-  void *data;
-} stack_node;
+stack stack_init(void) { return (stack){NULL, 0}; }
+bool stack_isempty(stack *s) { return s->size == 0; }
 
-typedef struct {
-  stack_node *top;
-  size_t size;
-} stack;
+static stack_node *_create_node(void *data) {
+    stack_node *nnode = malloc(sizeof(stack_node));
 
-stack *stack_init(void) {
-  stack *stk = malloc(sizeof(stack));
-  if (stk == NULL) {
-    return NULL;
-  }
+    if (nnode == NULL) {
+        return NULL;
+    }
 
-  stk->top = NULL;
-  stk->size = 0;
+    nnode->data = data;
+    nnode->next = NULL;
 
-  return stk;
+    return nnode;
 }
 
-stack_node *push(stack *stk, void *data) {
-  stack_node *node = malloc(sizeof(stack_node));
+stack_node *stack_peek(stack *s) {
+    if (s == NULL) {
+        return NULL;
+    }
 
-  if (stk == NULL || node == NULL) {
-    return NULL;
-  }
-
-  node->data = data;
-  node->next = NULL;
-
-  if (stk->top == NULL) {
-    stk->top = node;
-  } else {
-    node->next = stk->top;
-    stk->top = node;
-  }
-
-  stk->size++;
-  return node;
+    return s->top;
 }
 
-stack_node *pop(stack *stk) {
-  if (stk == NULL || stk->top == NULL) {
-    return NULL;
-  }
+bool stack_push(stack *s, void *data) {
+    if (s == NULL) {
+        return false;
+    }
 
-  stack_node *node = stk->top;
-  stk->top = node->next;
+    stack_node *nnode = _create_node(data);
 
-  stk->size--;
-  return node;
+    if (nnode == NULL) {
+        return false;
+    }
+
+    if (s->top == NULL) {
+        s->top = nnode;
+    } else {
+        nnode->next = s->top;
+        s->top = nnode;
+    }
+
+    s->size++;
+    return true;
 }
 
-stack_node *peek(stack *stk) {
-  if (stk == NULL) {
-    return NULL;
-  }
+bool stack_pop(stack *s) {
+    if (s == NULL || s->size == 0) {
+        return false;
+    }
 
-  return stk->top;
+    stack_node *fnode = s->top;
+    s->top = fnode->next;
+    free(fnode);
+
+    s->size--;
+    return true;
 }
 
-void display(stack *stk) {
-  if (stk == NULL) {
-    return;
-  }
+void stack_destroy(stack *s) {
+    if (s == NULL) {
+        return;
+    }
 
-  printf("\n");
-  stack_node *curr = stk->top;
+    size_t size = s->size;
+    for (size_t i = 0; i < size; i++) {
+        stack_pop(s);
+    }
 
-  for (u64 i = 0; curr; curr = curr->next, i++) {
-    printf(" %lu%s\n", *(u64 *)curr->data, i == 0 ? " <- TOP" : "");
-  }
-  printf("\n");
-}
-
-void destroy(stack *stk) {
-  if (stk == NULL) {
-    return;
-  }
-
-  size_t sz = stk->size;
-  for (size_t i = 0; i < sz; i++) {
-    free(pop(stk));
-  }
-
-  free(stk);
+    s->top = NULL;
+    s->size = 0;
 }
