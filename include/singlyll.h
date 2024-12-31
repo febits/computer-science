@@ -1,11 +1,10 @@
 #ifndef SINGLYLL_H
 #define SINGLYLL_H
 
-#include "types.h"
 #include <stdbool.h>
 #include <stddef.h>
 
-typedef i8(compare)(const void *, const void *);
+#include "utils.h"
 
 typedef struct ll_node {
     struct ll_node *next;

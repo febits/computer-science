@@ -7,6 +7,7 @@
 #include "types.h"
 
 typedef enum { FAILED, PASSED } ut_assert_print_type;
+typedef i8(compare)(const void *, const void *);
 
 #define ARRSIZE(arr) (sizeof((arr)) / sizeof((arr[0])))
 #define UT_GETAS(pointer, type) (*(type)(pointer))
