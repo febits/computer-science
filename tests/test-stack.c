@@ -13,6 +13,7 @@ int main(void) {
     ut_assert(s.size == 0);
     ut_assert(stack_pop(&s) == false);
     ut_assert(stack_peek(&s) == NULL);
+    ut_assert(stack_isempty(&s) == true);
 
     ut_assert(stack_push(&s, &arr[0]) == true);
     ut_assert(s.size == 1);
@@ -45,8 +46,11 @@ int main(void) {
     ut_assert(stack_peek(&s) != NULL);
     ut_assert(UT_GETAS(stack_peek(&s)->data, u64 *) == 10);
 
+    ut_assert(stack_isempty(&s) == false);
+
     stack_destroy(&s);
 
+    ut_assert(stack_isempty(&s) == true);
     ut_assert(s.size == 0);
     ut_assert(s.top == NULL);
 

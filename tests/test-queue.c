@@ -14,6 +14,7 @@ int main(void) {
     ut_assert(q.size == 0);
     ut_assert(q_dequeue(&q) == false);
     ut_assert(q_front(&q) == NULL);
+    ut_assert(q_isempty(&q) == true);
 
     ut_assert(q_enqueue(&q, &arr[0]) == true);
     ut_assert(q.size == 1);
@@ -40,9 +41,13 @@ int main(void) {
     ut_assert(UT_GETAS(q.front->data, u64 *) == 200);
 
     ut_assert(q_front(&q) != NULL);
+    ut_assert(UT_GETAS(q_front(&q)->data, u64 *) == 200);
+
+    ut_assert(q_isempty(&q) == false);
 
     q_destroy(&q);
 
+    ut_assert(q_isempty(&q) == true);
     ut_assert(q.size == 0);
     ut_assert(q.front == NULL);
     ut_assert(q.rear == NULL);
