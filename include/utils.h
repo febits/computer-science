@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "types.h"
 
@@ -31,6 +32,7 @@ typedef i8(compare)(const void *, const void *);
 void ut_assert_print(const char *file, const char *func, int line,
                      const char *expr, ut_assert_print_type type);
 
+bool ut_array_sorted(void *arr, size_t arrlen, size_t item_size, compare *cmp);
 void ut_swap(void *a, void *b, size_t item_size);
 i8 ut_compare_u64(const void *a, const void *b);
 
