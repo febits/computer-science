@@ -1,15 +1,15 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "utils.h"
 #include <string.h>
 
-#include "types.h"
-#include "utils.h"
-
 void reverse_string(char *s) {
-  u64 left = 0;
-  u64 right = strlen(s) - 1;
+    size_t left = 0;
+    size_t right = strlen(s) - 1;
 
-  while (left < right) {
-    ut_swap(&s[left++], &s[right--], sizeof(char));
-  }
+    while (left < right) {
+        char c = s[left];
+        s[left] = s[right];
+        s[right] = c;
+
+        left++, right--;
+    }
 }
