@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "qsort.h"
+#include "algorithms/qsort.h"
 #include "types.h"
 #include "utils.h"
 

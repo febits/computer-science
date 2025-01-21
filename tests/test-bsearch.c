@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "bsearch.h"
+#include "algorithms/bsearch.h"
 #include "types.h"
 #include "utils.h"
 

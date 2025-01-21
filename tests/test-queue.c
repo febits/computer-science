@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "utils.h"
-#include "queue.h"
+#include "ds/queue.h"
 
 int main(void) {
     u64 arr[] = {50, 100, 200, 40};

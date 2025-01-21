@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "isort.h"
+#include "algorithms/isort.h"
 #include "types.h"
 #include "utils.h"
 

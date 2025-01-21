@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "msort.h"
+#include "algorithms/msort.h"
 #include "types.h"
 #include "utils.h"
 

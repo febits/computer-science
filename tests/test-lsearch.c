@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "lsearch.h"
+#include "algorithms/lsearch.h"
 #include "types.h"
 #include "utils.h"
 

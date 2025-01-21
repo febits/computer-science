@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "bst.h"
+#include "ds/bst.h"
 #include "types.h"
 #include "utils.h"
 

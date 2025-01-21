@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "jsearch.h"
+#include "algorithms/jsearch.h"
 #include "types.h"
 #include "utils.h"
 

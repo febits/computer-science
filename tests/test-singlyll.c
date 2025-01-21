@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "singlyll.h"
+#include "ds/singlyll.h"
 #include "utils.h"
 
 int main(void) {

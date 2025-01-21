@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "rstr.h"
+#include "algorithms/rstr.h"
 #include "utils.h"
 
 int main(void) {

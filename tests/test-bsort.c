@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "bsort.h"
+#include "algorithms/bsort.h"
 #include "utils.h"
 
 int main(void) {

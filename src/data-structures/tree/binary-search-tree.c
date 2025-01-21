@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "bst.h"
+#include "ds/bst.h"
 
 bst_node *bst_max(bst_node *root) {
     if (root == NULL) {

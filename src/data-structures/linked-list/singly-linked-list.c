@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "singlyll.h"
+#include "ds/singlyll.h"
 #include "types.h"
 
 singly_ll ll_init(void) { return (singly_ll){NULL, 0}; }

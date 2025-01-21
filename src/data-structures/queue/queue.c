@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "queue.h"
+#include "ds/queue.h"
 #include "utils.h"
 
 queue queue_init(void) { return (queue){NULL, NULL, 0}; }
