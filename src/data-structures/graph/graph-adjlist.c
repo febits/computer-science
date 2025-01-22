@@ -2,126 +2,78 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "types.h"
-#include "utils.h"
+#include "ds/graphl.h"
 
-typedef struct adjlist_node {
-  struct adjlist_node *next;
-  u64 vertex;
-} adjlist_node;
+graphl graphl_init(size_t vertices_num) {
+    graphl g = {NULL, vertices_num};
 
-typedef struct {
-  u64 vertices;
-  adjlist_node **adjlist;
-} graph;
+    g.adjlist = calloc(g.vertices, sizeof(adjlist_node *));
+    if (g.adjlist == NULL) {
+        return (graphl){NULL, 0};
+    }
 
-graph *graph_init(u64 vertices) {
-  graph *g = malloc(sizeof(graph));
-  if (g == NULL) return NULL;
-
-  g->vertices = vertices;
-  g->adjlist = calloc(g->vertices, sizeof(adjlist_node *));
-  if (g->adjlist == NULL) {
-    free(g);
-    return NULL;
-  }
-
-  return g;
+    return g;
 }
 
-static adjlist_node *create_node(u64 vertex) {
-  adjlist_node *node = malloc(sizeof(adjlist_node));
-  if (node == NULL) return NULL;
+static adjlist_node *create_node(int vertex) {
+    adjlist_node *node = malloc(sizeof(adjlist_node));
+    if (node == NULL) {
+        return NULL;
+    }
 
-  node->vertex = vertex;
-  node->next = NULL;
+    node->vertex = vertex;
+    node->next = NULL;
 
-  return node;
+    return node;
 }
 
-bool add_edge(graph *g, u64 from, u64 to) {
-  if (g == NULL || g->adjlist == NULL || from >= g->vertices ||
-      to >= g->vertices) {
+bool graphl_add_edge(graphl *g, size_t from, size_t to) {
+    if (g == NULL || g->adjlist == NULL || from >= g->vertices ||
+        to >= g->vertices) {
+        return false;
+    }
+
+    adjlist_node *node = create_node(to);
+
+    if (node == NULL) {
+        return false;
+    }
+
+    node->next = g->adjlist[from];
+    g->adjlist[from] = node;
+
+    return true;
+}
+
+bool graphl_is_edge(graphl *g, size_t from, size_t to) {
+    if (g == NULL || g->adjlist == NULL || from >= g->vertices ||
+        to >= g->vertices) {
+        return false;
+    }
+
+    for (adjlist_node *curr = g->adjlist[from]; curr; curr = curr->next) {
+        if (curr->vertex == (int)to) {
+            return true;
+        }
+    }
+
     return false;
-  }
-
-  adjlist_node *node = create_node(to);
-  if (node == NULL) return NULL;
-  node->next = g->adjlist[from];
-  g->adjlist[from] = node;
-
-  // node = create_node(from);
-  // if (node == NULL) return NULL;
-  // node->next = g->adjlist[to];
-  // g->adjlist[to] = node;
-
-  return true;
 }
 
-bool is_edge(graph *g, u64 from, u64 to) {
-  if (g == NULL || g->adjlist == NULL || from >= g->vertices ||
-      to >= g->vertices) {
-    return false;
-  }
-
-  for (adjlist_node *curr = g->adjlist[from]; curr; curr = curr->next) {
-    if (curr->vertex == to) {
-      return true;
+void graphl_destroy(graphl *g) {
+    if (g == NULL) {
+        return;
     }
-  }
 
-  return false;
-}
-
-void display(graph *g) {
-  if (g == NULL) {
-    return;
-  }
-
-  printf("\n");
-  for (size_t i = 0; i < g->vertices; i++) {
-    printf(" %lu | ", i);
-    adjlist_node *curr = g->adjlist[i];
-    for (; curr; curr = curr->next) {
-      printf("%lu%s", curr->vertex, curr->next ? " -> " : "");
+    for (size_t i = 0; i < g->vertices; i++) {
+        adjlist_node *tmp = NULL;
+        adjlist_node *curr = g->adjlist[i];
+        while (curr) {
+            tmp = curr;
+            curr = curr->next;
+            free(tmp);
+        }
     }
-    printf("\n");
-  }
-  printf("\n");
-}
 
-void destroy(graph *g) {
-  if (g == NULL) {
-    return;
-  }
-  
-  for (size_t i = 0; i < g->vertices; i++) {
-    adjlist_node *tmp = NULL;
-    adjlist_node *curr = g->adjlist[i];
-    while (curr) {
-      tmp = curr;
-      curr = curr->next;
-      free(tmp);
-    }
-  }
-
-  free(g->adjlist);
-  free(g);
-}
-
-bool gendotfile(graph *g, const char *filename) {
-  FILE *f = fopen(filename, "w");
-  if (f == NULL) return NULL;
-
-  fprintf(f, "strict graph{\n");
-  fprintf(f, "\tnode [shape=circle];\n");
-  for (size_t i = 0; i < g->vertices; i++) {
-    for (adjlist_node *curr = g->adjlist[i]; curr; curr = curr->next) {
-      fprintf(f, "\t%lu -- %lu;\n", i, curr->vertex);
-    }
-  }
-  fprintf(f, "}\n");
-
-  fclose(f);
-  return true;
+    free(g->adjlist);
 }
