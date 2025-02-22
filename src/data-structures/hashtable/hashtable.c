@@ -1,187 +1,162 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
 
-#include "types.h"
-#include "utils.h"
+#include "ds/hash.h"
 
-#define FREE_E(he)                                                             \
-  free((void *)(he)->key);                                                     \
-  free((he));
+#define HASHTNULL                                                              \
+    (hashtable) { NULL, 0, NULL }
 
-#define COMPARE(x, y, len) (strncmp((x), (y), (len)) == 0)
-#define HASH(h, sz) ((h) % (sz))
-#define KEYMAX 1024
+hashtable hash_init(hashfunc hashf, size_t nbuckets) {
+    if (hashf == NULL) {
+        return HASHTNULL;
+    }
 
-typedef u64(hash_fn)(const char *);
+    hashtable h = {NULL, nbuckets, hashf};
 
-typedef struct h_entry {
-  struct h_entry *next;
-  const char *key;
-  void *data;
-} h_entry;
+    h.buckets = calloc(nbuckets, sizeof(hentry *));
 
-typedef struct {
-  h_entry **buckets;
-  hash_fn *hash;
-  size_t capacity;
-} htable;
+    if (h.buckets == NULL) {
+        return HASHTNULL;
+    }
 
-static u64 _djb2(const char *key) {
-  u64 hash = 5381;
-  char c;
-
-  while ((c = *key++)) {
-    hash = ((hash << 5) + hash) + c;
-  }
-
-  return hash;
+    return h;
 }
 
-htable *htable_init(size_t sz, hash_fn *hash) {
-  htable *ht = malloc(sizeof(htable));
-  if (ht == NULL) return NULL;
+static hentry *_create_node(const char *key, void *data) {
+    if (strlen(key) > KEYLEN) {
+        return NULL;
+    }
 
-  ht->buckets = calloc(sz, sizeof(h_entry *));
-  if (ht->buckets == NULL) {
-    free(ht);
+    hentry *e = malloc(sizeof(hentry));
+
+    if (e == NULL) {
+        return NULL;
+    }
+
+    e->key = malloc(sizeof(char) * (KEYLEN + 1));
+
+    if (e->key == NULL) {
+        free(e);
+        return NULL;
+    }
+
+    strncpy(e->key, key, KEYLEN);
+
+    e->data = data;
+    e->next = NULL;
+
+    return e;
+}
+
+bool hash_contains(hashtable *h, const char *key) {
+    if (h == NULL || key == NULL) {
+        return false;
+    }
+
+    uint64_t index = h->hashf(key) % h->capacity;
+    hentry *tentry = h->buckets[index];
+
+    while (tentry != NULL) {
+        if (strncmp(tentry->key, key, KEYLEN) == 0) {
+            return true;
+        }
+
+        tentry = tentry->next;
+    }
+
+    return false;
+}
+
+bool hash_insert(hashtable *h, const char *key, void *data) {
+    if (h == NULL || key == NULL || hash_contains(h, key) == true) {
+        return false;
+    }
+
+    uint64_t index = h->hashf(key) % h->capacity;
+    hentry *e = _create_node(key, data);
+
+    if (e == NULL) {
+        return false;
+    }
+
+    e->next = h->buckets[index];
+    h->buckets[index] = e;
+
+    return true;
+}
+
+hentry *hash_get(hashtable *h, const char *key) {
+    if (h == NULL || key == NULL) {
+        return NULL; 
+    }
+
+    uint64_t index = h->hashf(key) % h->capacity;
+    hentry *tentry = h->buckets[index];
+
+    while (tentry != NULL) {
+        if (strncmp(tentry->key, key, KEYLEN) == 0) {
+            return tentry;
+        }
+
+        tentry = tentry->next;
+    }
+
     return NULL;
-  }
-
-  ht->hash = hash ? hash : _djb2;
-  ht->capacity = sz;
-
-  return ht;
 }
 
-static bool _lookup(htable *ht, const char *key) {
-  h_entry *curr = ht->buckets[HASH(ht->hash(key), ht->capacity)];
-
-  for (; curr; curr = curr->next) {
-    if (COMPARE(curr->key, key, KEYMAX)) {
-      return true;
+static void _free_hentry(hentry *e) {
+    if (e == NULL) {
+        return;
     }
-  }
 
-  return false;
+    free(e->key);
+    free(e);
 }
 
-h_entry *insert(htable *ht, const char *key, void *data) {
-  h_entry *he = malloc(sizeof(h_entry));
-
-  if (ht == NULL || he == NULL || key == NULL || _lookup(ht, key)) {
-    return NULL;
-  }
-
-  he->key = strndup(key, KEYMAX);
-  he->data = data;
-  he->next = NULL;
-
-  if (he->key == NULL) return NULL;
-
-  u64 index = HASH(ht->hash(he->key), ht->capacity);
-
-  if (ht->buckets[index] == NULL) {
-    ht->buckets[index] = he;
-  } else {
-    he->next = ht->buckets[index];
-    ht->buckets[index] = he;
-  }
-
-  return he;
-}
-
-h_entry *delete(htable *ht, const char *key) {
-  if (ht == NULL || key == NULL) {
-    return NULL;
-  }
-
-  u64 index = HASH(ht->hash(key), ht->capacity);
-  h_entry *he = NULL;
-
-  if (ht->buckets[index] != NULL &&
-      COMPARE(ht->buckets[index]->key, key, KEYMAX)) {
-
-    he = ht->buckets[index];
-    ht->buckets[index] = NULL;
-  } else {
-    h_entry *prev = NULL;
-    h_entry *curr = ht->buckets[index];
-
-    for (; curr; prev = curr, curr = curr->next) {
-      if (COMPARE(curr->key, key, KEYMAX)) {
-        he = curr;
-        prev->next = curr->next;
-        break;
-      }
+bool hash_delete(hashtable *h, const char *key) {
+    if (h == NULL || key == NULL || hash_contains(h, key) == false) {
+        return false;
     }
-  }
 
-  return he;
+    uint64_t index = h->hashf(key) % h->capacity;
+    hentry *tentry = h->buckets[index];
+
+    if (strncmp(tentry->key, key, KEYLEN) == 0) {
+        h->buckets[index] = tentry->next;
+        _free_hentry(tentry);
+    } else {
+        while (tentry != NULL) {
+            if (strncmp(tentry->next->key, key, KEYLEN) == 0) {
+                hentry *fentry = tentry->next;
+                tentry->next = fentry->next;
+                _free_hentry(fentry);
+                break;
+            }
+
+            tentry = tentry->next;
+        }
+    }
+
+    return true;
 }
 
-h_entry *get(htable *ht, const char *key) {
-  if (ht == NULL || key == NULL) {
-    return NULL;
-  }
-
-  h_entry *he = NULL;
-  u64 index = HASH(ht->hash(key), ht->capacity);
-
-  if (ht->buckets[index]) {
-    h_entry *curr = ht->buckets[index];
-    for (; curr; curr = curr->next) {
-      if (COMPARE(curr->key, key, KEYMAX)) {
-        he = curr;
-        break;
-      }
+void hash_destroy(hashtable *h) {
+    if (h == NULL) {
+        return;
     }
-  }
 
-  return he;
-}
+    for (size_t i = 0; i < h->capacity; i++) {
+        hentry *tentry = h->buckets[i];
 
-void display(htable *ht) {
-  if (ht == NULL) {
-    return;
-  }
-
-  printf("\n");
-  for (size_t i = 0; i < ht->capacity; i++) {
-    if (ht->buckets[i]) {
-      h_entry *curr = ht->buckets[i];
-      while (curr) {
-        printf(" [slot %lu] -> \"%s\":\t[%p]  (hash=%lu)\n", i, curr->key,
-               curr->data, ht->hash(curr->key));
-        curr = curr->next;
-      }
+        while (tentry != NULL) {
+            hentry *tmp = tentry;
+            tentry = tmp->next;
+            _free_hentry(tmp);
+        }
     }
-  }
-  printf("\n");
-}
-
-void destroy(htable *ht) {
-  if (ht == NULL) {
-    return;
-  }
-
-  for (size_t i = 0; i < ht->capacity; i++) {
-    if (ht->buckets[i]) {
-      h_entry *tmp = NULL;
-      h_entry *curr = ht->buckets[i];
-
-      while (curr) {
-        tmp = curr;
-        curr = curr->next;
-        free((void *)tmp->key);
-        free(tmp);
-      }
-    }
-  }
-
-  free(ht->buckets);
-  free(ht);
+    
+    free(h->buckets);
 }
