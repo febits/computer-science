@@ -15,7 +15,7 @@ typedef struct {
     size_t size;
 } queue;
 
-queue queue_init(void);
+bool queue_init(queue *q);
 
 queue_node *q_front(queue *q);
 bool q_isempty(queue *q);

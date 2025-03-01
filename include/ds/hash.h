@@ -22,7 +22,7 @@ typedef struct {
     hashfunc hashf;
 } hashtable;
 
-hashtable hash_init(hashfunc hashf, size_t nbuckets);
+bool hash_init(hashtable *h, hashfunc hashf, size_t nbuckets);
 
 bool hash_insert(hashtable *h, const char *key, void *data);
 bool hash_delete(hashtable *h, const char *key);

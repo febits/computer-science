@@ -4,6 +4,8 @@
 
 #include "ds/graphm.h"
 
+#define GRAPHNULL (graphm){NULL, 0}
+
 void graphm_destroy(graphm *g) {
     if (g == NULL) {
         return;
@@ -16,23 +18,27 @@ void graphm_destroy(graphm *g) {
     free(g->adjmatrix);
 }
 
-graphm graphm_init(size_t vertices_num) {
-    graphm g = {NULL, vertices_num};
-
-    g.adjmatrix = calloc(g.vertices, sizeof(bool *));
-    if (g.adjmatrix == NULL) {
-        return (graphm){NULL, 0};
+bool graphm_init(graphm *g, size_t vertices_num) {
+    if (g == NULL) {
+        return false;
     }
 
-    for (size_t i = 0; i < g.vertices; i++) {
-        g.adjmatrix[i] = calloc(g.vertices, sizeof(bool));
-        if (g.adjmatrix[i] == NULL) {
-            graphm_destroy(&g);
-            return (graphm){NULL, 0};
+    *g = (graphm){calloc(vertices_num, sizeof(bool *)), vertices_num};
+    if (g->adjmatrix == NULL) {
+        *g = GRAPHNULL;
+        return false;
+    }
+
+    for (size_t i = 0; i < g->vertices; i++) {
+        g->adjmatrix[i] = calloc(g->vertices, sizeof(bool));
+        if (g->adjmatrix[i] == NULL) {
+            graphm_destroy(g);
+            *g = GRAPHNULL;
+            return false;
         }
     }
 
-    return g;
+    return true;
 }
 
 bool graphm_add_edge(graphm *g, size_t from, size_t to) {

@@ -14,7 +14,7 @@ typedef struct {
     size_t vertices;
 } graphl;
 
-graphl graphl_init(size_t vertices_num);
+bool graphl_init(graphl *g, size_t vertices_num);
 bool graphl_add_edge(graphl *g, size_t from, size_t to);
 bool graphl_is_edge(graphl *g, size_t from, size_t to);
 void graphl_destroy(graphl *g);

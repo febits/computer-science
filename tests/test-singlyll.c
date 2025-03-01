@@ -8,7 +8,9 @@ int main(void) {
 
     ut_print_array(arr, ARRSIZE(arr));
 
-    singly_ll ll = ll_init();
+    singly_ll ll;
+
+    ut_assert(ll_init(&ll) == true);
 
     ut_assert(ll_insert_at_head(&ll, &arr[0]) == true);
     ut_assert(ll_insert_at_tail(&ll, &arr[1]) == true);

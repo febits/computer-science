@@ -4,8 +4,9 @@
 #include "utils.h"
 
 int main(void) {
-    graphl g = graphl_init(4);
+    graphl g;
 
+    ut_assert(graphl_init(&g, 4) == true);
     ut_assert(g.adjlist != NULL);
 
     ut_assert(graphl_add_edge(&g, 0, 1) == true);

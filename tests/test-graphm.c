@@ -4,8 +4,9 @@
 #include "utils.h"
 
 int main(void) {
-    graphm g = graphm_init(4);
+    graphm g;
 
+    ut_assert(graphm_init(&g, 4) == true);
     ut_assert(g.adjmatrix != NULL);
 
     ut_assert(graphm_add_edge(&g, 0, 1) == true);

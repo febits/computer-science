@@ -5,8 +5,16 @@
 #include "ds/singlyll.h"
 #include "types.h"
 
-singly_ll ll_init(void) { return (singly_ll){NULL, 0}; }
 bool ll_isempty(singly_ll *ll) { return ll->size == 0; }
+
+bool ll_init(singly_ll *ll) {
+    if (ll == NULL) {
+        return false;
+    }
+
+    *ll = (singly_ll){NULL, 0};
+    return true;
+}
 
 static ll_node *_create_node(void *data) {
     ll_node *nnode = malloc(sizeof(ll_node));

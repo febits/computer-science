@@ -16,7 +16,7 @@ typedef struct {
     size_t size;
 } singly_ll;
 
-singly_ll ll_init(void);
+bool ll_init(singly_ll *ll);
 
 bool ll_insert_at_head(singly_ll *ll, void *data);
 bool ll_insert_at_tail(singly_ll *ll, void *data);

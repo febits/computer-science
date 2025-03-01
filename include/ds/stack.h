@@ -14,7 +14,7 @@ typedef struct {
     size_t size;
 } stack;
 
-stack stack_init(void);
+bool stack_init(stack *s);
 
 stack_node *stack_peek(stack *s);
 bool stack_isempty(stack *s);

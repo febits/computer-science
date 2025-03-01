@@ -5,7 +5,14 @@
 #include "types.h"
 #include "utils.h"
 
-stack stack_init(void) { return (stack){NULL, 0}; }
+bool stack_init(stack *s) {
+    if (s == NULL) {
+        return false;
+    }
+
+    *s = (stack){NULL, 0};
+    return true;
+}
 bool stack_isempty(stack *s) { return s->size == 0; }
 
 static stack_node *_create_node(void *data) {

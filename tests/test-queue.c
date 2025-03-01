@@ -9,7 +9,9 @@ int main(void) {
 
     ut_print_array(arr, ARRSIZE(arr));
 
-    queue q = queue_init();
+    queue q;
+
+    ut_assert(queue_init(&q) == true);
 
     ut_assert(q.size == 0);
     ut_assert(q_dequeue(&q) == false);

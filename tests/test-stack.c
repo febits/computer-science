@@ -8,7 +8,9 @@ int main(void) {
 
     ut_print_array(arr, ARRSIZE(arr));
 
-    stack s = stack_init();
+    stack s;
+
+    ut_assert(stack_init(&s) == true);
 
     ut_assert(s.size == 0);
     ut_assert(stack_pop(&s) == false);

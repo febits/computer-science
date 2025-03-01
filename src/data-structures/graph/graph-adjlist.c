@@ -4,15 +4,22 @@
 
 #include "ds/graphl.h"
 
-graphl graphl_init(size_t vertices_num) {
-    graphl g = {NULL, vertices_num};
+#define GRAPHNULL (graphl){NULL, 0}
 
-    g.adjlist = calloc(g.vertices, sizeof(adjlist_node *));
-    if (g.adjlist == NULL) {
-        return (graphl){NULL, 0};
+bool graphl_init(graphl *g, size_t vertices_num) {
+    if (g == NULL) {
+        return false;
     }
 
-    return g;
+    *g = (graphl){NULL, vertices_num};
+
+    g->adjlist = calloc(g->vertices, sizeof(adjlist_node *));
+    if (g->adjlist == NULL) {
+        *g = GRAPHNULL;
+        return false;
+    }
+
+    return true;
 }
 
 static adjlist_node *create_node(int vertex) {

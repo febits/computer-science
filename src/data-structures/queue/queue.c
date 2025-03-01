@@ -3,7 +3,15 @@
 #include "ds/queue.h"
 #include "utils.h"
 
-queue queue_init(void) { return (queue){NULL, NULL, 0}; }
+bool queue_init(queue *q) {
+    if (q == NULL) {
+        return false;
+    }
+
+    *q = (queue){NULL, NULL, 0};
+    return true;
+}
+
 bool q_isempty(queue *q) { return q->size == 0; }
 
 static queue_node *_create_node(void *data) {

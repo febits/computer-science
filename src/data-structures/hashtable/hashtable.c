@@ -9,20 +9,26 @@
 #define HASHTNULL                                                              \
     (hashtable) { NULL, 0, NULL }
 
-hashtable hash_init(hashfunc hashf, size_t nbuckets) {
+bool hash_init(hashtable *h, hashfunc hashf, size_t nbuckets) {
+    if (h == NULL) {
+        return false;
+    }
+
     if (hashf == NULL) {
-        return HASHTNULL;
+        *h = HASHTNULL;
+        return false;
     }
 
-    hashtable h = {NULL, nbuckets, hashf};
+    *h = (hashtable){NULL, nbuckets, hashf};
 
-    h.buckets = calloc(nbuckets, sizeof(hentry *));
+    h->buckets = calloc(nbuckets, sizeof(hentry *));
 
-    if (h.buckets == NULL) {
-        return HASHTNULL;
+    if (h->buckets == NULL) {
+        *h = HASHTNULL;
+        return false;
     }
 
-    return h;
+    return true;
 }
 
 static hentry *_create_node(const char *key, void *data) {

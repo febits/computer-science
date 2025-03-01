@@ -30,7 +30,9 @@ static uint64_t lose_lose(const char *s) {
 int main(void) {
     // lose_lose is used only to show collisions, don't use it
 
-    hashtable h = hash_init(lose_lose, 1000);
+    hashtable h;
+
+    ut_assert(hash_init(&h, lose_lose, 1000) == true);
 
     ut_assert(h.buckets != NULL);
     ut_assert(h.capacity == 1000);
