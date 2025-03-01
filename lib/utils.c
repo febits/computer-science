@@ -42,7 +42,7 @@ bool ut_array_sorted(void *arr, size_t arrlen, size_t item_size, compare *cmp) {
     return true;
 }
 
-i8 ut_compare_u64(const void *a, const void *b) {
+int ut_compare_u64(const void *a, const void *b) {
     const u64 _a = *(const u64 *)a;
     const u64 _b = *(const u64 *)b;
 
