@@ -3,23 +3,16 @@
 #include <string.h>
 #include <wchar.h>
 
+#include "ds/dyrray.h"
 #include "ds/maxheap.h"
 #include "utils.h"
 
-#define INITIAL_CAPACITY 5
-#define MAXHEAPNULL                                                            \
-    (maxheap) { 0, 0, 0, NULL }
-
-bool maxheap_init(maxheap *hp, size_t elemsize) {
+bool maxheap_init(maxheap *hp, size_t item_size, size_t initial_capacity) {
     if (hp == NULL) {
         return false;
     }
 
-    *hp = (maxheap){0, INITIAL_CAPACITY, elemsize,
-                    malloc(elemsize * INITIAL_CAPACITY)};
-
-    if (hp->data == NULL) {
-        *hp = MAXHEAPNULL;
+    if (dyrray_init(&hp->dr, item_size, initial_capacity) == false) {
         return false;
     }
 
@@ -27,40 +20,34 @@ bool maxheap_init(maxheap *hp, size_t elemsize) {
 }
 
 static void _siftup(maxheap *hp, size_t i, compare *cmp) {
-    char *base = hp->data;
-
     size_t parent = (i - 1) / 2;
     while (i != 0 &&
-           cmp(base + (hp->elemsize * i), base + (hp->elemsize * parent)) > 0) {
-        ut_swap(base + (hp->elemsize * i), base + (hp->elemsize * parent),
-                hp->elemsize);
+           cmp(dyrray_get(&hp->dr, i), dyrray_get(&hp->dr, parent)) > 0) {
+        dyrray_swap(&hp->dr, i, parent);
         i = parent;
         parent = (i - 1) / 2;
     }
 }
 
 static void _siftdown(maxheap *hp, size_t i, compare *cmp) {
-    char *base = hp->data;
-
     while (true) {
         size_t biggest = i;
         size_t left = 2 * i + 1;
         size_t right = 2 * i + 2;
 
-        if (left < hp->size && cmp(base + (left * hp->elemsize),
-                                   base + (biggest * hp->elemsize)) > 0) {
+        if (left < hp->dr.size &&
+            cmp(dyrray_get(&hp->dr, left), dyrray_get(&hp->dr, biggest)) > 0) {
             biggest = left;
         }
 
-        if (right < hp->size && cmp(base + (right * hp->elemsize),
-                                    base + (biggest * hp->elemsize)) > 0) {
+        if (right < hp->dr.size &&
+            cmp(dyrray_get(&hp->dr, right), dyrray_get(&hp->dr, biggest)) > 0) {
             biggest = right;
         }
 
         if (biggest == i) break;
 
-        ut_swap(base + (hp->elemsize * i), base + (hp->elemsize * biggest),
-                hp->elemsize);
+        dyrray_swap(&hp->dr, i, biggest);
 
         i = biggest;
     }
@@ -71,19 +58,20 @@ bool maxheap_heapify(maxheap *hp, void *arr, size_t size, compare *cmp) {
         return false;
     }
 
-    if (size > hp->capacity) {
-        hp->capacity = size * 2;
-        hp->data = realloc(hp->data, hp->capacity * hp->elemsize);
+    hp->dr.size = size;
 
-        if (hp->data == NULL) {
+    if (size > hp->dr.capacity) {
+        hp->dr.capacity = size * 2;
+        hp->dr.data = realloc(hp->dr.data, hp->dr.capacity * hp->dr.item_size);
+
+        if (hp->dr.data == NULL) {
             return false;
         }
     }
 
-    hp->size = size;
-    memcpy(hp->data, arr, hp->size * hp->elemsize);
+    memcpy(hp->dr.data, arr, hp->dr.size * hp->dr.item_size);
 
-    for (int i = (hp->size / 2) - 1; i >= 0; i--) {
+    for (int i = (hp->dr.size / 2) - 1; i >= 0; i--) {
         _siftdown(hp, i, cmp);
     }
 
@@ -95,29 +83,19 @@ bool maxheap_push(maxheap *hp, void *data, compare *cmp) {
         return false;
     }
 
-    if (hp->size >= hp->capacity) {
-        hp->capacity *= 2;
-        hp->data = realloc(hp->data, hp->capacity * hp->elemsize);
-
-        if (hp->data == NULL) {
-            return false;
-        }
-    }
-
-    char *base = hp->data;
-    memcpy(base + (hp->size++ * hp->elemsize), data, hp->elemsize);
-    _siftup(hp, hp->size - 1, cmp);
+    dyrray_push(&hp->dr, data);
+    _siftup(hp, hp->dr.size - 1, cmp);
 
     return true;
 }
 
 bool maxheap_pop(maxheap *hp, compare *cmp) {
-    if (hp == NULL || cmp == NULL || hp->size == 0) {
+    if (hp == NULL || cmp == NULL || hp->dr.size == 0) {
         return false;
     }
 
-    char *base = hp->data;
-    ut_swap(base, base + (hp->elemsize * --hp->size), hp->elemsize);
+    dyrray_pop(&hp->dr);
+    dyrray_swap(&hp->dr, 0, hp->dr.size);
     _siftdown(hp, 0, cmp);
 
     return true;
@@ -128,14 +106,14 @@ void *maxheap_peek(maxheap *hp) {
         return NULL;
     }
 
-    return hp->size == 0 ? NULL : hp->data;
+    return dyrray_get(&hp->dr, 0);
 }
 
 void maxheap_destroy(maxheap *hp) {
-    if (hp == NULL || hp->data == NULL) {
+    if (hp == NULL) {
         return;
     }
 
-    hp->size = hp->capacity = 0;
-    free(hp->data);
+    free(hp->dr.data);
+    hp->dr.size = hp->dr.capacity = hp->dr.item_size = 0;
 }

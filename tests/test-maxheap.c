@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#include "ds/dyrray.h"
 #include "ds/maxheap.h"
 #include "utils.h"
 
@@ -9,91 +10,91 @@ int main(void) {
 
     maxheap hp;
 
-    ut_assert(maxheap_init(&hp, sizeof(u64)) == true);
+    ut_assert(maxheap_init(&hp, sizeof(u64), DYRRAY_DEFAULT_CAPACITY) == true);
     ut_assert(maxheap_peek(&hp) == NULL);
 
     ut_assert(maxheap_push(&hp, &arr[0], ut_compare_u64) == true);
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 10);
-    ut_assert(hp.size == 1);
+    ut_assert(hp.dr.size == 1);
 
     ut_assert(maxheap_push(&hp, &arr[1], ut_compare_u64) == true);
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 50);
-    ut_assert(hp.size == 2);
+    ut_assert(hp.dr.size == 2);
 
     ut_assert(maxheap_push(&hp, &arr[2], ut_compare_u64) == true);
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 50);
-    ut_assert(hp.size == 3);
+    ut_assert(hp.dr.size == 3);
 
     ut_assert(maxheap_push(&hp, &arr[3], ut_compare_u64) == true);
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 60);
-    ut_assert(hp.size == 4);
+    ut_assert(hp.dr.size == 4);
 
     ut_assert(maxheap_push(&hp, &arr[4], ut_compare_u64) == true);
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 100);
-    ut_assert(hp.size == 5);
+    ut_assert(hp.dr.size == 5);
 
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 100);
     ut_assert(maxheap_pop(&hp, ut_compare_u64) == true);
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 60);
-    ut_assert(hp.size == 4);
+    ut_assert(hp.dr.size == 4);
 
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 60);
     ut_assert(maxheap_pop(&hp, ut_compare_u64) == true);
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 50);
-    ut_assert(hp.size == 3);
+    ut_assert(hp.dr.size == 3);
 
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 50);
     ut_assert(maxheap_pop(&hp, ut_compare_u64) == true);
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 40);
-    ut_assert(hp.size == 2);
+    ut_assert(hp.dr.size == 2);
 
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 40);
     ut_assert(maxheap_pop(&hp, ut_compare_u64) == true);
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 10);
-    ut_assert(hp.size == 1);
+    ut_assert(hp.dr.size == 1);
 
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 10);
     ut_assert(maxheap_pop(&hp, ut_compare_u64) == true);
     ut_assert(maxheap_peek(&hp) == NULL);
-    ut_assert(hp.size == 0);
+    ut_assert(hp.dr.size == 0);
 
     ut_assert(maxheap_pop(&hp, ut_compare_u64) == false);
 
     maxheap_destroy(&hp);
 
-    ut_assert(maxheap_init(&hp, sizeof(u64)) == true);
+    ut_assert(maxheap_init(&hp, sizeof(u64), 5) == true);
     ut_assert(maxheap_heapify(&hp, arr2, ARRSIZE(arr2), ut_compare_u64) ==
               true);
 
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 150);
     ut_assert(maxheap_pop(&hp, ut_compare_u64) == true);
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 120);
-    ut_assert(hp.size == 5);
+    ut_assert(hp.dr.size == 5);
 
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 120);
     ut_assert(maxheap_pop(&hp, ut_compare_u64) == true);
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 70);
-    ut_assert(hp.size == 4);
+    ut_assert(hp.dr.size == 4);
 
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 70);
     ut_assert(maxheap_pop(&hp, ut_compare_u64) == true);
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 50);
-    ut_assert(hp.size == 3);
+    ut_assert(hp.dr.size == 3);
 
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 50);
     ut_assert(maxheap_pop(&hp, ut_compare_u64) == true);
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 30);
-    ut_assert(hp.size == 2);
+    ut_assert(hp.dr.size == 2);
 
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 30);
     ut_assert(maxheap_pop(&hp, ut_compare_u64) == true);
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 20);
-    ut_assert(hp.size == 1);
+    ut_assert(hp.dr.size == 1);
 
     ut_assert(UT_GETAS(maxheap_peek(&hp), u64 *) == 20);
     ut_assert(maxheap_pop(&hp, ut_compare_u64) == true);
     ut_assert(maxheap_peek(&hp) == NULL);
-    ut_assert(hp.size == 0);
+    ut_assert(hp.dr.size == 0);
 
     maxheap_destroy(&hp);
 

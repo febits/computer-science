@@ -8,7 +8,7 @@ typedef struct {
     maxheap hp;
 } pqueue;
 
-bool pqueue_init(pqueue *pq, size_t elemsize);
+bool pqueue_init(pqueue *pq, size_t item_size, size_t initial_capacity);
 
 bool pq_enqueue(pqueue *pq, void *data, compare *cmp);
 bool pq_dequeue(pqueue *pq, compare *cmp);

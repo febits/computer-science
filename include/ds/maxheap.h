@@ -4,16 +4,14 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#include "ds/dyrray.h"
 #include "utils.h"
 
 typedef struct {
-    size_t size;
-    size_t capacity;
-    size_t elemsize;
-    void *data;
+    dyrray dr;
 } maxheap;
 
-bool maxheap_init(maxheap *hp, size_t elemsize);
+bool maxheap_init(maxheap *hp, size_t item_size, size_t initial_capacity);
 
 bool maxheap_heapify(maxheap *hp, void *arr, size_t size, compare *cmp);
 bool maxheap_push(maxheap *hp, void *data, compare *cmp);

@@ -8,6 +8,7 @@ Here is some code mainly focused on [data structures](https://en.wikipedia.org/w
 ## Implemented
 
 - **Data structures**
+    - [x] Dynamic Array
     - [x] Stack
     - [x] Queue
     - [x] Priority Queue
@@ -41,4 +42,5 @@ Here is some code mainly focused on [data structures](https://en.wikipedia.org/w
 - [x] Heap, Priority Queue and Heap Sort
 - [x] Circular Queue
 - [x] String to Int (stoi)
+- [x] Dynamic Array
 - [ ] Red-Black Tree (Balanced BST)

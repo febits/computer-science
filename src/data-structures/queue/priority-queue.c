@@ -1,16 +1,16 @@
-#include <stdlib.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 #include "ds/maxheap.h"
 #include "ds/pqueue.h"
 #include "utils.h"
 
-bool pqueue_init(pqueue *pq, size_t elemsize) {
+bool pqueue_init(pqueue *pq, size_t item_size, size_t initial_capacity) {
     if (pq == NULL) {
         return false;
     }
-    
-    if (maxheap_init(&pq->hp, elemsize) == false) {
+
+    if (maxheap_init(&pq->hp, item_size, initial_capacity) == false) {
         return false;
     }
 
@@ -45,7 +45,7 @@ void *pq_front(pqueue *pq) {
     if (pq == NULL) {
         return false;
     }
-    
+
     return maxheap_peek(&pq->hp);
 }
 
@@ -54,7 +54,7 @@ bool pq_isempty(pqueue *pq) {
         return false;
     }
 
-    return pq->hp.size == 0;
+    return pq->hp.dr.size == 0;
 }
 
 void pqueue_destroy(pqueue *pq) {

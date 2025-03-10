@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "ds/pqueue.h"
+#include "ds/dyrray.h"
 #include "utils.h"
 
 int main(void) {
@@ -8,7 +9,7 @@ int main(void) {
 
     pqueue pq;
 
-    ut_assert(pqueue_init(&pq, sizeof(u64)) == true);
+    ut_assert(pqueue_init(&pq, sizeof(u64), DYRRAY_DEFAULT_CAPACITY) == true);
     ut_assert(pq_isempty(&pq) == true);
 
     ut_assert(pq_enqueue(&pq, &arr[0], ut_compare_u64) == true);
